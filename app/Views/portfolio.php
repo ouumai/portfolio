@@ -7,6 +7,9 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
     <style>
+        :root {
+            --nav-offset: 6rem;
+        }
         html {
             scroll-behavior: smooth;
         }
@@ -14,7 +17,12 @@
             background: #eff6ff;
         }
         section[id] {
-            scroll-margin-top: 6rem;
+            scroll-margin-top: calc(var(--nav-offset) + 1rem);
+        }
+        @media (max-width: 767px) {
+            section[id] {
+                scroll-margin-top: calc(var(--nav-offset) - 0.5rem);
+            }
         }
         .text-gradient {
             background: linear-gradient(135deg, #4338ca, #7c3aed);
@@ -44,8 +52,8 @@
 </head>
 <body class="text-slate-800 font-sans">
 
-    <nav class="fixed inset-x-0 top-0 z-20 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-sm">
-        <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+    <nav class="fixed inset-x-0 top-0 z-20 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-sm" data-site-nav>
+        <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between" data-nav-bar>
             <a href="#hero" class="text-lg font-semibold text-slate-900">Umairah Sabri</a>
             <button
                 type="button"
@@ -113,7 +121,7 @@
                 </div>
                 <div class="grid gap-8 lg:grid-cols-[380px_minmax(0,1fr)] lg:items-stretch">
                     <div class="mx-auto w-full max-w-[380px] rounded-[28px] border border-slate-200 shadow-md shadow-slate-200/20 overflow-hidden h-full">
-                        <img src="<?= base_url('images/umairahsabri.jpg') ?>" alt="Umairah Sabri" class="h-full min-h-[320px] sm:min-h-[420px] lg:min-h-[520px] w-full object-cover object-center" />
+                        <img src="<?= base_url('images/umairahsabri.png') ?>" alt="Umairah Sabri" class="h-full min-h-[320px] sm:min-h-[420px] lg:min-h-[520px] w-full object-cover object-center" />
                     </div>
                     <div class="rounded-[34px] bg-gradient-to-br from-indigo-200 via-violet-100 to-sky-100 p-[3px] shadow-md shadow-slate-200/20 lg:min-h-[520px]">
                         <div class="rounded-[32px] bg-white p-6 sm:p-8 md:p-10 lg:min-h-[520px] flex flex-col justify-between">
@@ -357,17 +365,33 @@
 
     <script>
         // Smooth scroll logic remains the same
+        const mobileMenuButton = document.querySelector('[data-mobile-menu-button]');
+        const mobileMenu = document.querySelector('[data-mobile-menu]');
+        const menuIcon = document.querySelector('[data-menu-icon]');
+        const mobileLinks = document.querySelectorAll('[data-mobile-link]');
+        const navBar = document.querySelector('[data-nav-bar]');
+        const siteNav = document.querySelector('[data-site-nav]');
+
+        const updateNavOffset = () => {
+            const navHeight = navBar ? navBar.offsetHeight : 80;
+            document.documentElement.style.setProperty('--nav-offset', `${navHeight}px`);
+        };
+
+        const setMobileMenuState = (isOpen) => {
+            if (!mobileMenuButton || !mobileMenu || !menuIcon) return;
+
+            mobileMenu.classList.toggle('hidden', !isOpen);
+            mobileMenuButton.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+            menuIcon.className = isOpen ? 'bi bi-x text-2xl' : 'bi bi-list text-2xl';
+            requestAnimationFrame(updateNavOffset);
+        };
+
         const scrollToSection = (targetId) => {
             const targetSection = document.querySelector(targetId);
             if (!targetSection) return;
-
-            const nav = document.querySelector('nav');
-            const navHeight = nav ? nav.offsetHeight : 80;
-            const absoluteTop = window.scrollY + targetSection.getBoundingClientRect().top;
-            
-            window.scrollTo({
-                top: absoluteTop - navHeight,
-                behavior: 'smooth'
+            targetSection.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
             });
         };
 
@@ -376,22 +400,12 @@
                 const targetId = link.getAttribute('href');
                 if (!targetId || targetId === '#') return;
                 event.preventDefault();
-                scrollToSection(targetId);
+                setMobileMenuState(false);
+                requestAnimationFrame(() => scrollToSection(targetId));
             });
         });
 
-        const mobileMenuButton = document.querySelector('[data-mobile-menu-button]');
-        const mobileMenu = document.querySelector('[data-mobile-menu]');
-        const menuIcon = document.querySelector('[data-menu-icon]');
-        const mobileLinks = document.querySelectorAll('[data-mobile-link]');
-
         if (mobileMenuButton && mobileMenu && menuIcon) {
-            const setMobileMenuState = (isOpen) => {
-                mobileMenu.classList.toggle('hidden', !isOpen);
-                mobileMenuButton.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
-                menuIcon.className = isOpen ? 'bi bi-x text-2xl' : 'bi bi-list text-2xl';
-            };
-
             setMobileMenuState(false);
 
             mobileMenuButton.addEventListener('click', () => {
@@ -403,6 +417,9 @@
                 link.addEventListener('click', () => setMobileMenuState(false));
             });
         }
+
+        updateNavOffset();
+        window.addEventListener('resize', updateNavOffset);
     </script>
 </body>
 </html>
