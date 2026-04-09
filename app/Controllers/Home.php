@@ -21,7 +21,7 @@ class Home extends BaseController
         ];
 
         if (! $this->validate($rules)) {
-            return redirect()->to('/umairah-sabri-portfolio')
+            return redirect()->to(site_url('/'))
                 ->withInput()
                 ->with('contact_error', 'Please complete the form correctly before sending your message.')
                 ->with('scroll_to', 'contact');
@@ -53,13 +53,13 @@ class Home extends BaseController
                 'error' => print_r($email->printDebugger(['headers']), true),
             ]);
 
-            return redirect()->to('/umairah-sabri-portfolio')
+            return redirect()->to(site_url('/'))
                 ->withInput()
                 ->with('contact_error', 'Your message could not be sent right now. Please check the SMTP settings and try again.')
                 ->with('scroll_to', 'contact');
         }
 
-        return redirect()->to('/umairah-sabri-portfolio')
+        return redirect()->to(site_url('/'))
             ->with('contact_success', 'Your message has been sent successfully.')
             ->with('scroll_to', 'contact');
     }

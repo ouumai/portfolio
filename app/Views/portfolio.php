@@ -47,6 +47,16 @@
     <nav class="fixed inset-x-0 top-0 z-20 bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
             <a href="#hero" class="text-lg font-semibold text-slate-900">Umairah Sabri</a>
+            <button
+                type="button"
+                class="md:hidden inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-slate-200 text-slate-700 hover:bg-slate-50 transition"
+                aria-label="Open navigation menu"
+                aria-expanded="false"
+                aria-controls="mobile-menu"
+                data-mobile-menu-button
+            >
+                <i class="bi bi-list text-2xl" data-menu-icon></i>
+            </button>
             <div class="hidden md:flex items-center space-x-8 text-slate-700">
                 <a href="#hero" class="hover:text-indigo-600 transition">Home</a>
                 <a href="#about" class="hover:text-indigo-600 transition">About Me</a>
@@ -54,6 +64,16 @@
                 <a href="#credentials" class="hover:text-indigo-600 transition">Credentials</a>
                 <a href="#projects" class="hover:text-indigo-600 transition">Projects</a>
                 <a href="#contact" class="hover:text-indigo-600 transition">Contact</a>
+            </div>
+        </div>
+        <div id="mobile-menu" class="hidden md:hidden border-t border-slate-100 bg-white/95" data-mobile-menu>
+            <div class="max-w-7xl mx-auto px-4 py-4 flex flex-col gap-2 text-sm font-medium text-slate-700">
+                <a href="#hero" class="rounded-2xl px-4 py-3 hover:bg-slate-50 hover:text-indigo-600 transition" data-mobile-link>Home</a>
+                <a href="#about" class="rounded-2xl px-4 py-3 hover:bg-slate-50 hover:text-indigo-600 transition" data-mobile-link>About Me</a>
+                <a href="#skills" class="rounded-2xl px-4 py-3 hover:bg-slate-50 hover:text-indigo-600 transition" data-mobile-link>Skills</a>
+                <a href="#credentials" class="rounded-2xl px-4 py-3 hover:bg-slate-50 hover:text-indigo-600 transition" data-mobile-link>Credentials</a>
+                <a href="#projects" class="rounded-2xl px-4 py-3 hover:bg-slate-50 hover:text-indigo-600 transition" data-mobile-link>Projects</a>
+                <a href="#contact" class="rounded-2xl px-4 py-3 hover:bg-slate-50 hover:text-indigo-600 transition" data-mobile-link>Contact</a>
             </div>
         </div>
     </nav>
@@ -93,7 +113,7 @@
                 </div>
                 <div class="grid gap-8 lg:grid-cols-[380px_minmax(0,1fr)] lg:items-stretch">
                     <div class="mx-auto w-full max-w-[380px] rounded-[28px] border border-slate-200 shadow-md shadow-slate-200/20 overflow-hidden h-full">
-                        <img src="<?= base_url('images/umairahsabri.png') ?>" alt="Umairah Sabri" class="h-full min-h-[320px] sm:min-h-[420px] lg:min-h-[520px] w-full object-cover object-center" />
+                        <img src="<?= base_url('images/umairahsabri.jpg') ?>" alt="Umairah Sabri" class="h-full min-h-[320px] sm:min-h-[420px] lg:min-h-[520px] w-full object-cover object-center" />
                     </div>
                     <div class="rounded-[34px] bg-gradient-to-br from-indigo-200 via-violet-100 to-sky-100 p-[3px] shadow-md shadow-slate-200/20 lg:min-h-[520px]">
                         <div class="rounded-[32px] bg-white p-6 sm:p-8 md:p-10 lg:min-h-[520px] flex flex-col justify-between">
@@ -359,6 +379,30 @@
                 scrollToSection(targetId);
             });
         });
+
+        const mobileMenuButton = document.querySelector('[data-mobile-menu-button]');
+        const mobileMenu = document.querySelector('[data-mobile-menu]');
+        const menuIcon = document.querySelector('[data-menu-icon]');
+        const mobileLinks = document.querySelectorAll('[data-mobile-link]');
+
+        if (mobileMenuButton && mobileMenu && menuIcon) {
+            const setMobileMenuState = (isOpen) => {
+                mobileMenu.classList.toggle('hidden', !isOpen);
+                mobileMenuButton.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+                menuIcon.className = isOpen ? 'bi bi-x text-2xl' : 'bi bi-list text-2xl';
+            };
+
+            setMobileMenuState(false);
+
+            mobileMenuButton.addEventListener('click', () => {
+                const isOpen = mobileMenu.classList.contains('hidden');
+                setMobileMenuState(isOpen);
+            });
+
+            mobileLinks.forEach((link) => {
+                link.addEventListener('click', () => setMobileMenuState(false));
+            });
+        }
     </script>
 </body>
 </html>
