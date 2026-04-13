@@ -124,6 +124,7 @@ class Home extends BaseController
                 [
                     'title' => 'SECURE LICENSE ACTIVATION VIA ID DEVICE SYSTEM',
                     'subtitle' => 'FYP Project',
+                    'github_link' => 'https://github.com/ouumai/FYP-Secure-License-Activation-System.git',
                     'overview' => 'A hardware-locked licensing system designed for small-scale software developers to prevent software piracy without requiring an internet connection.',
                     'tech' => 'Python, custom Tkinter, SQLite',
                     'notes' => 'Utilizes AES encryption to bind license keys to hardware identifiers such as motherboard serial numbers or MAC addresses.'
@@ -131,6 +132,7 @@ class Home extends BaseController
                 [
                     'title' => 'SISTEM PERKHIDMATAN ICT (ICT4U)',
                     'subtitle' => 'Internship Project',
+                    'github_link' => 'https://github.com/ouumai/ICT4U.git',
                     'highlight' => 'Completed under the supervision of Encik Noorulfaiz from department of Pengurusan Projek Aplikasi (PMO Aplikasi) at Pusat Teknologi Digital (DigitalUKM).',
                     'overview' => 'An ICT service system developed for Pusat Teknologi Digital (DigitalUKM) to manage current application workflows, documentation and service information links.',
                     'tech' => 'PHP 8.4, CodeIgniter 4.7, MVC Architecture, MySQL',

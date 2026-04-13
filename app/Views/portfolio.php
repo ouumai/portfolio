@@ -242,74 +242,70 @@
         </section>
 
         <section id="projects" class="py-20 px-4">
-            <div class="max-w-7xl mx-auto text-center mb-12">
-                <p class="text-xs font-semibold uppercase tracking-[0.3em] text-indigo-600">My Big Projects</p>
-                <h2 class="mt-3 text-3xl font-bold text-slate-900 sm:text-4xl">Selected Work</h2>
-            </div>
-            <div class="space-y-10 max-w-7xl mx-auto">
-                <?php foreach ($projects as $project): ?>
-                <div class="rounded-[32px] border border-slate-200 bg-white p-6 md:p-10 shadow-sm card-glow">
-                    <div class="mb-8 grid gap-10 lg:grid-cols-[1fr_1fr] lg:items-center">
-                        <div>
-                            <?php if (!empty($project['subtitle'])): ?>
+        <div class="max-w-7xl mx-auto text-center mb-12">
+            <p class="text-xs font-semibold uppercase tracking-[0.3em] text-indigo-600">My Big Projects</p>
+            <h2 class="mt-3 text-3xl font-bold text-slate-900 sm:text-4xl">Selected Work</h2>
+        </div>
+        <div class="space-y-10 max-w-7xl mx-auto">
+            <?php foreach ($projects as $project): ?>
+            <div class="rounded-[32px] border border-slate-200 bg-white p-6 md:p-10 shadow-sm card-glow">
+                <div class="mb-8 grid gap-10 lg:grid-cols-[1fr_1fr] lg:items-center">
+                    <div>
+                        <?php if (!empty($project['subtitle'])): ?>
                             <p class="text-xs uppercase tracking-[0.3em] text-indigo-600 font-bold"><?= $project['subtitle'] ?></p>
-                            <?php endif; ?>
-                            <h3 class="mt-4 text-3xl font-bold text-slate-900"><?= $project['title'] ?></h3>
-                            <?php if ($project['title'] === 'SECURE LICENSE ACTIVATION VIA ID DEVICE SYSTEM'): ?>
+                        <?php endif; ?>
+                        
+                        <h3 class="mt-4 text-3xl font-bold text-slate-900"><?= $project['title'] ?></h3>
+                        
+                        <?php if (stripos($project['title'], 'LICENSE') !== false): ?>
                             <p class="mt-3 text-sm text-emerald-600 font-medium flex items-center gap-2">
                                 <i class="bi bi-award-fill"></i> Gold Medal - ISDIG2025
                             </p>
-                            <?php endif; ?>
-                            <p class="mt-4 text-slate-600 leading-relaxed"><?= $project['highlight'] ?? '' ?></p>
-                        </div>
-                        
-                        <?php
-                        $projectImage = '';
-                        switch ($project['title']) {
-                            case 'SECURE LICENSE ACTIVATION VIA ID DEVICE SYSTEM': $projectImage = 'securelicenseactivaction'; break;
-                            case 'SISTEM PERKHIDMATAN ICT (ICT4U)': $projectImage = 'ict4u'; break;
-                        }
-                        ?>
-                        <div class="rounded-[28px] bg-slate-50 border border-slate-100 p-4 flex items-center justify-center min-h-[300px]">
-                            <?php if ($projectImage): ?>
-                            <div class="h-full w-full overflow-hidden rounded-[24px]">
-                                <img src="<?= base_url('images/' . $projectImage . '.png') ?>" alt="<?= $project['title'] ?>" class="w-full h-full object-contain hover:scale-105 transition duration-500" />
-                            </div>
-                            <?php else: ?>
-                            <div class="h-[300px] w-full rounded-[24px] bg-gradient-to-br from-indigo-50 to-violet-50"></div>
-                            <?php endif; ?>
+                        <?php endif; ?>
+
+                        <p class="mt-6 text-slate-600 leading-relaxed">
+                            <?= $project['highlight'] ?? '' ?>
+                        </p>
+
+                        <div class="mt-5">
+                            <a href="<?= $project['github_link'] ?? '#' ?>" target="_blank" class="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-2xl bg-slate-900 text-white hover:bg-gray-600 transition-all duration-300 shadow-md group">
+                                <i class="bi bi-github text-xl"></i>
+                                <span class="text-sm font-bold">View on GitHub</span>
+                                <i class="bi bi-chevron-right text-xs group-hover:translate-x-1 transition-transform"></i>
+                            </a>
                         </div>
                     </div>
 
-                    <div class="grid gap-6 md:grid-cols-3">
-                        <div class="rounded-3xl bg-slate-50 p-6 border border-slate-100">
-                            <p class="text-xs uppercase tracking-[0.2em] text-slate-400 mb-3 font-bold">Overview</p>
-                            <p class="text-sm leading-7 text-slate-600"><?= $project['overview'] ?></p>
-                        </div>
-                        
-                        <div class="rounded-3xl bg-slate-50 p-6 border border-slate-100">
-                            <p class="text-xs uppercase tracking-[0.2em] text-slate-400 mb-4 font-bold">Technical Stack</p>
-                            <div class="flex flex-wrap gap-2">
-                                <?php 
-                                $techStack = explode(',', $project['tech']); 
-                                foreach ($techStack as $tech): 
-                                ?>
-                                    <span class="px-3 py-1 bg-white border border-indigo-100 text-indigo-600 rounded-full text-[11px] font-bold shadow-sm">
-                                        <?= trim($tech) ?>
-                                    </span>
-                                <?php endforeach; ?>
-                            </div>
-                        </div>
-
-                        <div class="rounded-3xl bg-slate-50 p-6 border border-slate-100">
-                            <p class="text-xs uppercase tracking-[0.2em] text-slate-400 mb-3 font-bold">Key Contribution</p>
-                            <p class="text-sm leading-7 text-slate-600"><?= $project['notes'] ?></p>
-                        </div>
+                    <div class="rounded-[28px] bg-slate-50 border border-slate-100 p-4 flex items-center justify-center min-h-[300px]">
+                        <?php 
+                            $projectImage = (stripos($project['title'], 'ICT4U') !== false) ? 'ict4u' : 'securelicenseactivaction';
+                        ?>
+                        <img src="<?= base_url('images/' . $projectImage . '.png') ?>" class="w-full h-full object-contain hover:scale-105 transition duration-500 rounded-[24px]" />
                     </div>
                 </div>
-                <?php endforeach; ?>
+
+                <div class="grid gap-6 md:grid-cols-3">
+                    <div class="rounded-3xl bg-slate-50 p-6 border border-slate-100">
+                        <p class="text-xs uppercase tracking-[0.2em] text-slate-400 mb-3 font-bold">Overview</p>
+                        <p class="text-sm leading-7 text-slate-600"><?= $project['overview'] ?></p>
+                    </div>
+                    <div class="rounded-3xl bg-slate-50 p-6 border border-slate-100">
+                        <p class="text-xs uppercase tracking-[0.2em] text-slate-400 mb-4 font-bold">Technical Stack</p>
+                        <div class="flex flex-wrap gap-2">
+                            <?php foreach (explode(',', $project['tech']) as $tech): ?>
+                                <span class="px-3 py-1 bg-white border border-indigo-100 text-indigo-600 rounded-full text-[11px] font-bold shadow-sm"><?= trim($tech) ?></span>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                    <div class="rounded-3xl bg-slate-50 p-6 border border-slate-100">
+                        <p class="text-xs uppercase tracking-[0.2em] text-slate-400 mb-3 font-bold">Key Contribution</p>
+                        <p class="text-sm leading-7 text-slate-600"><?= $project['notes'] ?></p>
+                    </div>
+                </div>
             </div>
-        </section>
+            <?php endforeach; ?>
+        </div>
+    </section>
 
         <section id="contact" class="bg-slate-50 min-h-[calc(100vh-6rem)] py-12 px-4 flex items-center">
             <div class="max-w-7xl mx-auto w-full flex flex-col justify-center">
