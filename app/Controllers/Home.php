@@ -73,10 +73,13 @@ class Home extends BaseController
             'heroText' => 'An IT student who enjoys coding, with a strong passion for designing user-friendly interfaces and a keen interest in the world of data. I am particularly interested in how data can be transformed into meaningful insights while creating clean and intuitive designs. I have been developing my skills through academic projects, mainly working as a full stack developer, building both front-end and back-end applications. I am eager to continue learning and growing in the tech field.',
             'about' => [
                 'fullName' => 'Nur Umairah Binti Mohd Sabri',
-                'education' => 'Diploma Teknologi Maklumat (Teknologi Digital)',
+                'education' => 'Diploma in Teknologi Maklumat (Teknologi Digital)',
+                'track' => 'Software & Application Development (SAD)',
                 'institution' => 'Politeknik Balik Pulau',
                 'cgpa' => '3.84',
                 'achievement' => 'Receive Anugerah Ketua Jabatan (AKJ) Every Semester',
+                'internship' => 'Pusat Teknologi Digital (DigitalUKM), Universiti Kebangsaan Malaysia (UKM)',
+                'vision' => 'Making Sense of the Binary World',
                 'photo' => 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=640&q=80'
             ],
             'skills' => [
@@ -110,7 +113,12 @@ class Home extends BaseController
                 'Artificial Intelligence Fundamentals',
                 'Cloud Computing Fundamentals',
                 'Cybersecurity Fundamentals',
-                'Explore Emerging Tech'
+                'Explore Emerging Tech',
+                'The Comprehensive SQL Course',
+                'CodeIgniter for Beginners: Build a Complete Web Application',
+                'CodeIgniter 4 - Beginner to Expert. The Best PHP Framework',
+                'The Git & GitHub Bootcamp',
+                'How To Elicit, Write & Analyze Requirements in The AI Era'
             ],
             'projects' => [
                 [
@@ -125,7 +133,7 @@ class Home extends BaseController
                     'subtitle' => 'Internship Project',
                     'highlight' => 'Completed under the supervision of Encik Noorulfaiz from department of Pengurusan Projek Aplikasi (PMO Aplikasi) at Pusat Teknologi Digital (DigitalUKM).',
                     'overview' => 'An ICT service system developed for Pusat Teknologi Digital (DigitalUKM) to manage current application workflows, documentation and service information links.',
-                    'tech' => 'PHP 8.4, CodeIgniter 4.7, MVC Architecture & MySQL',
+                    'tech' => 'PHP 8.4, CodeIgniter 4.7, MVC Architecture, MySQL',
                     'notes' => 'Improved a legacy system by implementing secure authentication with CodeIgniter Shield, interactive asynchronous workflows using AJAX and SweetAlert, and an analytical dashboard for real-time monitoring.'
                 ]
             ],

@@ -8,16 +8,16 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
     <style>
         :root {
-            --nav-offset: 6rem;
+            --nav-offset: 80px;
         }
-        html {
+        /*html {
             scroll-behavior: smooth;
-        }
+        }*/
         body {
             background: #eff6ff;
         }
         section[id] {
-            scroll-margin-top: calc(var(--nav-offset) + 1rem);
+            scroll-margin-top: 0 !important;
         }
         @media (max-width: 767px) {
             section[id] {
@@ -117,7 +117,7 @@
             <div class="max-w-6xl mx-auto w-full flex flex-col justify-start">
                 <div class="mb-8 text-center">
                     <p class="text-xs font-semibold uppercase tracking-[0.3em] text-indigo-600">About Me</p>
-                    <h2 class="mt-3 text-3xl font-bold text-slate-900 sm:text-4xl">&lt;/Get to Know Me&gt;</h2>
+                    <h2 class="mt-3 text-3xl font-bold text-slate-900 sm:text-4xl">Get to Know Me</h2>
                 </div>
                 <div class="grid gap-8 lg:grid-cols-[380px_minmax(0,1fr)] lg:items-stretch">
                     <div class="mx-auto w-full max-w-[380px] rounded-[28px] border border-slate-200 shadow-md shadow-slate-200/20 overflow-hidden h-full">
@@ -128,9 +128,12 @@
                         <div class="space-y-5 text-slate-700 text-base sm:text-lg leading-relaxed">
                             <p><span class="font-bold text-slate-900 block text-sm uppercase tracking-wider">Full Name:</span> <?= $about['fullName'] ?></p>
                             <p><span class="font-bold text-slate-900 block text-sm uppercase tracking-wider">Education:</span> <?= $about['education'] ?></p>
+							<p><span class="font-bold text-slate-900 block text-sm uppercase tracking-wider">Track:</span> <?= $about['track'] ?></p>
                             <p><span class="font-bold text-slate-900 block text-sm uppercase tracking-wider">Institution:</span> <?= $about['institution'] ?></p>
                             <p><span class="font-bold text-slate-900 block text-sm uppercase tracking-wider">CGPA:</span> <span class="text-indigo-600 font-bold"><?= $about['cgpa'] ?></span></p>
+                            <p><span class="font-bold text-slate-900 block text-sm uppercase tracking-wider">Internship:</span> <?= $about['internship'] ?></p>
                             <p><span class="font-bold text-slate-900 block text-sm uppercase tracking-wider">Academic Achievements:</span> <?= $about['achievement'] ?></p>
+                            <p><span class="font-bold text-slate-900 block text-sm uppercase tracking-wider">Vision:</span> <?= $about['vision'] ?></p>
                         </div>
                         <div class="mt-8 flex items-center gap-4">
                             <a href="https://linkedin.com/in/umairah-sabri" target="_blank" class="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-600 text-white shadow-lg shadow-indigo-500/20 hover:-translate-y-1 transition">
@@ -153,7 +156,7 @@
             <div class="max-w-7xl mx-auto w-full">
                 <div class="text-center mb-12 sm:mb-16">
                     <p class="text-xs font-semibold uppercase tracking-[0.3em] text-indigo-600">My Skills</p>
-                    <h2 class="mt-3 text-3xl font-bold text-slate-900 sm:text-4xl">&lt;/What I Can Do&gt;</h2>
+                    <h2 class="mt-3 text-3xl font-bold text-slate-900 sm:text-4xl">What I Can Do</h2>
                 </div>
                 <div class="grid gap-6 sm:gap-8 md:grid-cols-2 xl:grid-cols-3">
                     <?php foreach ($skills as $skill): ?>
@@ -183,33 +186,57 @@
             <div class="max-w-7xl mx-auto w-full">
                 <div class="text-center mb-10">
                     <p class="text-xs font-semibold uppercase tracking-[0.3em] text-indigo-600">My Credentials</p>
-                    <h2 class="mt-3 text-3xl font-bold text-slate-900 sm:text-4xl">&lt;/Certificates & Courses&gt;</h2>
+                    <h2 class="mt-3 text-3xl font-bold text-slate-900 sm:text-4xl">Certificates & Courses</h2>
                 </div>
                 <div class="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
                     <?php foreach ($credentials as $index => $credential): ?>
-                    <?php $cardClass = ''; ?>
-                    <div class="<?= $cardClass ?> rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm card-glow">
-                        <?php
-                        $imageName = '';
-                        switch ($credential) {
-                            case 'IBM SkillsBuild Data Analytics Certificate': $imageName = 'IBMdataanalytics'; break;
-                            case 'Artificial Intelligence Fundamentals': $imageName = 'IBMaifundamentals'; break;
-                            case 'Cloud Computing Fundamentals': $imageName = 'IBMcloudcomputing'; break;
-                            case 'Cybersecurity Fundamentals': $imageName = 'IBMcybersecurityfundamentals'; break;
-                            case 'Explore Emerging Tech': $imageName = 'IBMemergingtech'; break;
-                        }
-                        ?>
-                        <div class="flex flex-col gap-4 sm:flex-row sm:items-center">
-                            <div class="flex-shrink-0 rounded-3xl bg-slate-100 p-2.5">
-                                <img src="<?= base_url('images/' . $imageName . '.png') ?>" alt="<?= $credential ?>" class="h-24 w-24 rounded-2xl object-cover" />
-                            </div>
-                            <div class="space-y-1">
-                                <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-indigo-600">IBM Certificate</p>
-                                <h3 class="text-base sm:text-[1.05rem] font-semibold text-slate-900 leading-snug"><?= $credential ?></h3>
+                        <div class="rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm card-glow flex flex-col justify-between">
+                            <?php
+                            $imageName = '';
+                            $provider = 'IBM Certificate';
+                            $description = 'Completed during my diploma studies at Politeknik Balik Pulau.'; // Default untuk IBM
+
+                            switch ($credential) {
+                                case 'IBM SkillsBuild Data Analytics Certificate': $imageName = 'IBMdataanalytics'; break;
+                                case 'Artificial Intelligence Fundamentals': $imageName = 'IBMaifundamentals'; break;
+                                case 'Cloud Computing Fundamentals': $imageName = 'IBMcloudcomputing'; break;
+                                case 'Cybersecurity Fundamentals': $imageName = 'IBMcybersecurityfundamentals'; break;
+                                case 'Explore Emerging Tech': $imageName = 'IBMemergingtech'; break;
+
+                                // Udemy Section
+                                case 'The Comprehensive SQL Course': 
+                                    $imageName = 'udemy'; $provider = 'Udemy Certificate'; 
+                                    $description = 'Acquired during industrial training to enhance technical skills.'; break;
+                                case 'CodeIgniter for Beginners: Build a Complete Web Application': 
+                                    $imageName = 'udemy'; $provider = 'Udemy Certificate'; 
+                                    $description = 'Acquired during industrial training to enhance technical skills.'; break;
+                                case 'CodeIgniter 4 - Beginner to Expert. The Best PHP Framework': 
+                                    $imageName = 'udemy'; $provider = 'Udemy Certificate'; 
+                                    $description = 'Acquired during industrial training to enhance technical skills.'; break;
+                                case 'The Git & GitHub Bootcamp': 
+                                    $imageName = 'udemy'; $provider = 'Udemy Certificate'; 
+                                    $description = 'Acquired during industrial training to enhance technical skills.'; break;
+                                case 'How To Elicit, Write & Analyze Requirements in The AI Era': 
+                                    $imageName = 'udemy'; $provider = 'Udemy Certificate'; 
+                                    $description = 'Acquired during industrial training to enhance technical skills.'; break;
+                            }
+                            ?>
+                            <div>
+                                <div class="flex flex-col gap-4 sm:flex-row sm:items-center">
+                                    <div class="flex-shrink-0 rounded-3xl bg-slate-100 p-2.5">
+                                        <img src="<?= base_url('images/' . $imageName . '.png') ?>" alt="<?= $credential ?>" class="h-24 w-24 rounded-2xl object-cover" />
+                                    </div>
+                                    <div class="space-y-1">
+                                        <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-indigo-600"><?= $provider ?></p>
+                                        <h3 class="text-base sm:text-[1.05rem] font-semibold text-slate-900 leading-snug"><?= $credential ?></h3>
+                                    </div>
+                                </div>
+                                <p class="mt-4 text-[11px] leading-relaxed text-slate-500 font-medium italic border-t border-slate-50 pt-3">
+                                    <i class="bi bi-info-circle-fill mr-1 text-indigo-300"></i> <?= $description ?>
+                                </p>
                             </div>
                         </div>
-                    </div>
-                    <?php endforeach; ?>
+                        <?php endforeach; ?>
                 </div>
             </div>
         </section>
@@ -217,7 +244,7 @@
         <section id="projects" class="py-20 px-4">
             <div class="max-w-7xl mx-auto text-center mb-12">
                 <p class="text-xs font-semibold uppercase tracking-[0.3em] text-indigo-600">My Big Projects</p>
-                <h2 class="mt-3 text-3xl font-bold text-slate-900 sm:text-4xl">&lt;/Selected Work&gt;</h2>
+                <h2 class="mt-3 text-3xl font-bold text-slate-900 sm:text-4xl">Selected Work</h2>
             </div>
             <div class="space-y-10 max-w-7xl mx-auto">
                 <?php foreach ($projects as $project): ?>
@@ -288,7 +315,7 @@
             <div class="max-w-7xl mx-auto w-full flex flex-col justify-center">
                 <div class="mb-12 text-center">
                     <p class="text-xs font-semibold uppercase tracking-[0.3em] text-indigo-600">Let’s Get In Touch!</p>
-                    <h2 class="mt-3 text-3xl font-bold text-slate-900 sm:text-4xl">&lt;/Feel free to reach me out&gt;</h2>
+                    <h2 class="mt-3 text-3xl font-bold text-slate-900 sm:text-4xl">Feel free to reach me out</h2>
                 </div>
 
                 <div class="mx-auto grid w-full max-w-6xl gap-6 sm:gap-8 lg:grid-cols-[320px_minmax(0,680px)] lg:justify-center">
@@ -373,9 +400,12 @@
         const siteNav = document.querySelector('[data-site-nav]');
 
         const updateNavOffset = () => {
-            const navHeight = navBar ? navBar.offsetHeight : 80;
-            document.documentElement.style.setProperty('--nav-offset', `${navHeight}px`);
-        };
+        const siteNav = document.querySelector('[data-site-nav]');
+        const navHeight = siteNav ? siteNav.getBoundingClientRect().height : 74;
+        // Set variable CSS --nav-offset supaya elemen lain boleh guna kalau perlu
+        document.documentElement.style.setProperty('--nav-offset', `${navHeight}px`);
+        return navHeight;
+    };
 
         const setMobileMenuState = (isOpen) => {
             if (!mobileMenuButton || !mobileMenu || !menuIcon) return;
@@ -387,13 +417,49 @@
         };
 
         const scrollToSection = (targetId) => {
-            const targetSection = document.querySelector(targetId);
-            if (!targetSection) return;
-            targetSection.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start'
-            });
-        };
+        const targetSection = document.querySelector(targetId);
+        if (!targetSection) return;
+
+        // Ambil tinggi navbar terkini
+        const navHeight = updateNavOffset();
+        const sectionTop = targetSection.getBoundingClientRect().top + window.pageYOffset;
+        let scrollToPos;
+
+        // Khas untuk Skills: Bagi dia center
+        // 1. KHAS UNTUK SKILLS
+        if (targetId === '#skills') {
+            const viewportWidth = window.innerWidth;
+
+            // Kalau skrin kecik (Mobile - bawah 768px)
+            if (viewportWidth < 768) {
+                // Kat mobile, kita taknak dia center sangat. 
+                // Kita nak dia berhenti kat atas supaya nampak tajuk.
+                scrollToPos = sectionTop - navHeight + 10; 
+            } 
+            // Kalau skrin besar (Desktop)
+            else {
+                const sectionHeight = targetSection.offsetHeight;
+                const viewportHeight = window.innerHeight;
+                scrollToPos = sectionTop - (viewportHeight - sectionHeight) / 2;
+            }
+        }
+        // Khas untuk Credentials: Bagi dia naik rapat ke atas
+        else if (targetId === '#credentials') {
+            scrollToPos = sectionTop - navHeight; 
+        }
+        // Untuk About, Projects, Contact: Bagi gap sikit (15px)
+        else {
+        // Kalau nak dia naik lagi rapat ke atas, kita guna - 5 atau 0
+        // Kalau still nampak jauh, guna + 10 (dia akan paksa scroll naik lagi 10px)
+        scrollToPos = sectionTop - navHeight + 10; 
+    }
+
+        // Gerakkan skrin secara manual
+        window.scrollTo({
+            top: scrollToPos,
+            behavior: 'smooth'
+        });
+    };
 
         document.querySelectorAll('a[href^="#"]').forEach((link) => {
             link.addEventListener('click', (event) => {
