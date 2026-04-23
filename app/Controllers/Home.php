@@ -6,9 +6,31 @@ use Config\Services;
 
 class Home extends BaseController
 {
+    private const FALLBACK_PATH = '/';
+
     public function index()
     {
         return view('portfolio', $this->portfolioData());
+    }
+
+    public function setLanguage(string $locale)
+    {
+        $supportedLocales = config('App')->supportedLocales;
+        $locale = strtolower($locale);
+
+        if (! in_array($locale, $supportedLocales, true)) {
+            $locale = config('App')->defaultLocale;
+        }
+
+        session()->set('site_locale', $locale);
+
+        $referer = previous_url();
+
+        if (is_string($referer) && $referer !== '') {
+            return redirect()->to($referer)->withCookies();
+        }
+
+        return redirect()->to(self::FALLBACK_PATH)->withCookies();
     }
 
     public function sendMessage()
@@ -21,9 +43,9 @@ class Home extends BaseController
         ];
 
         if (! $this->validate($rules)) {
-            return redirect()->to(site_url('/'))
+            return redirect()->to($this->resolveReturnUrl())
                 ->withInput()
-                ->with('contact_error', 'Please complete the form correctly before sending your message.')
+                ->with('contact_error', lang('Portfolio.contactError'))
                 ->with('scroll_to', 'contact');
         }
 
@@ -40,7 +62,7 @@ class Home extends BaseController
         $email->setFrom($config->fromEmail, $config->fromName ?: 'Portfolio Contact Form');
         $email->setTo($recipient);
         $email->setReplyTo($senderEmail, $name);
-        $email->setSubject('Portfolio Contact: ' . $subject);
+        $email->setSubject(lang('Portfolio.email.subjectPrefix') . ': ' . $subject);
         $email->setMessage(view('emails/contact_message', [
             'name'        => $name,
             'email'       => $senderEmail,
@@ -53,90 +75,163 @@ class Home extends BaseController
                 'error' => print_r($email->printDebugger(['headers']), true),
             ]);
 
-            return redirect()->to(site_url('/'))
+            return redirect()->to($this->resolveReturnUrl())
                 ->withInput()
-                ->with('contact_error', 'Your message could not be sent right now. Please check the SMTP settings and try again.')
+                ->with('contact_error', lang('Portfolio.contactSendError'))
                 ->with('scroll_to', 'contact');
         }
 
-        return redirect()->to(site_url('/'))
-            ->with('contact_success', 'Your message has been sent successfully.')
+        return redirect()->to($this->resolveReturnUrl())
+            ->with('contact_success', lang('Portfolio.contactSuccess'))
             ->with('scroll_to', 'contact');
+    }
+
+    private function resolveReturnUrl(): string
+    {
+        $previousUrl = previous_url();
+
+        if (is_string($previousUrl) && $previousUrl !== '') {
+            return $previousUrl;
+        }
+
+        return self::FALLBACK_PATH;
     }
 
     private function portfolioData(): array
     {
+        $locale = service('request')->getLocale();
+        $isMalay = $locale === 'ms';
+
         return [
             'title' => 'Portfolio | Umairah Sabri',
+            'currentLocale' => $locale,
             'name'  => 'Umairah Sabri',
-            'subtitle' => 'Information Technology Student',
-            'heroText' => 'An IT student who enjoys coding, with a strong passion for designing user-friendly interfaces and a keen interest in the world of data. I am particularly interested in how data can be transformed into meaningful insights while creating clean and intuitive designs. I have been developing my skills through academic projects, mainly working as a full stack developer, building both front-end and back-end applications. I am eager to continue learning and growing in the tech field.',
+            'subtitle' => $isMalay ? 'Pelajar Teknologi Maklumat' : 'Information Technology Student',
+            'heroText' => $isMalay
+                ? 'Seorang pelajar IT yang meminati pengaturcaraan, dengan minat yang mendalam dalam mereka bentuk antara muka yang mesra pengguna dan minat yang mendalam dalam dunia data. Saya amat berminat dengan bagaimana data boleh diubah menjadi wawasan yang bermakna sambil mencipta reka bentuk yang bersih dan intuitif. Saya telah membangunkan kemahiran saya melalui projek akademik, terutamanya bekerja sebagai pembangun full stack, membina kedua-dua aplikasi front-end dan back-end. Saya bersemangat untuk terus belajar dan berkembang dalam bidang teknologi.'
+                : 'An IT student who enjoys coding, with a strong passion for designing user-friendly interfaces and a keen interest in the world of data. I am particularly interested in how data can be transformed into meaningful insights while creating clean and intuitive designs. I have been developing my skills through academic projects, mainly working as a full stack developer, building both front-end and back-end applications. I am eager to continue learning and growing in the tech field.',
             'about' => [
                 'fullName' => 'Nur Umairah Binti Mohd Sabri',
-                'education' => 'Diploma in Teknologi Maklumat (Teknologi Digital)',
-                'track' => 'Software & Application Development (SAD)',
+                'education' => $isMalay ? 'Diploma Teknologi Maklumat (Teknologi Digital)' : 'Diploma in Teknologi Maklumat (Teknologi Digital)',
+                'track' => $isMalay ? 'Pembangunan Perisian & Aplikasi (SAD)' : 'Software & Application Development (SAD)',
                 'institution' => 'Politeknik Balik Pulau',
                 'cgpa' => '3.84',
-                'achievement' => 'Receive Anugerah Ketua Jabatan (AKJ) Every Semester',
+                'achievement' => $isMalay ? 'Menerima Anugerah Ketua Jabatan (AKJ) pada setiap semester' : 'Receive Anugerah Ketua Jabatan (AKJ) Every Semester',
                 'internship' => 'Pusat Teknologi Digital (DigitalUKM), Universiti Kebangsaan Malaysia (UKM)',
-                'vision' => 'Making Sense of the Binary World',
+                'vision' => $isMalay ? 'Memahami Makna Dunia Binari' : 'Making Sense of the Binary World',
                 'photo' => 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=640&q=80'
             ],
             'skills' => [
                 [
-                    'title' => 'Programming',
+                    'key' => 'programming',
+                    'title' => $isMalay ? 'Pengaturcaraan' : 'Programming',
                     'items' => 'C++, Java, Python, HTML, CSS, JavaScript & PHP (CodeIgniter 4)'
                 ],
                 [
+                    'key' => 'database',
                     'title' => 'Database',
                     'items' => 'MySQL & Microsoft Access'
                 ],
                 [
-                    'title' => 'Data & Software',
+                    'key' => 'data-software',
+                    'title' => $isMalay ? 'Data & Perisian' : 'Data & Software',
                     'items' => 'Power BI, XAMPP, Visual Studio .NET & Android Studio'
                 ],
                 [
-                    'title' => 'Network',
+                    'key' => 'network',
+                    'title' => $isMalay ? 'Rangkaian' : 'Network',
                     'items' => 'Cisco Packet Tracer'
                 ],
                 [
-                    'title' => 'Multimedia & Design',
-                    'items' => 'Adobe Illustrator, Photoshop, Animate, Premiere Pro, Audition, Capcut & Canva'
+                    'key' => 'multimedia-design',
+                    'title' => $isMalay ? 'Multimedia & Reka Bentuk' : 'Multimedia & Design',
+                    'items' => 'Adobe Illustrator, Photoshop, Animate, Premiere Pro, Audition, CapCut & Canva'
                 ],
                 [
-                    'title' => 'Productivity',
-                    'items' => 'Microsoft Office (Word, Excel, PowerPoint)'
+                    'key' => 'productivity',
+                    'title' => $isMalay ? 'Produktiviti' : 'Productivity',
+                    'items' => $isMalay ? 'Microsoft Office (Word, Excel, PowerPoint)' : 'Microsoft Office (Word, Excel, PowerPoint)'
                 ]
             ],
             'credentials' => [
-                'IBM SkillsBuild Data Analytics Certificate',
-                'Artificial Intelligence Fundamentals',
-                'Cloud Computing Fundamentals',
-                'Cybersecurity Fundamentals',
-                'Explore Emerging Tech',
-                'The Comprehensive SQL Course',
-                'CodeIgniter for Beginners: Build a Complete Web Application',
-                'CodeIgniter 4 - Beginner to Expert. The Best PHP Framework',
-                'The Git & GitHub Bootcamp',
-                'How To Elicit, Write & Analyze Requirements in The AI Era'
+                [
+                    'title' => 'IBM SkillsBuild Data Analytics Certificate',
+                    'image' => 'IBMdataanalytics',
+                    'provider' => lang('Portfolio.credentials.ibmProvider'),
+                    'description' => lang('Portfolio.credentials.diplomaDescription'),
+                ],
+                [
+                    'title' => 'Artificial Intelligence Fundamentals',
+                    'image' => 'IBMaifundamentals',
+                    'provider' => lang('Portfolio.credentials.ibmProvider'),
+                    'description' => lang('Portfolio.credentials.diplomaDescription'),
+                ],
+                [
+                    'title' => 'Cloud Computing Fundamentals',
+                    'image' => 'IBMcloudcomputing',
+                    'provider' => lang('Portfolio.credentials.ibmProvider'),
+                    'description' => lang('Portfolio.credentials.diplomaDescription'),
+                ],
+                [
+                    'title' => 'Cybersecurity Fundamentals',
+                    'image' => 'IBMcybersecurityfundamentals',
+                    'provider' => lang('Portfolio.credentials.ibmProvider'),
+                    'description' => lang('Portfolio.credentials.diplomaDescription'),
+                ],
+                [
+                    'title' => 'Explore Emerging Tech',
+                    'image' => 'IBMemergingtech',
+                    'provider' => lang('Portfolio.credentials.ibmProvider'),
+                    'description' => lang('Portfolio.credentials.diplomaDescription'),
+                ],
+                [
+                    'title' => 'The Comprehensive SQL Course',
+                    'image' => 'udemy',
+                    'provider' => lang('Portfolio.credentials.udemyProvider'),
+                    'description' => lang('Portfolio.credentials.internshipDescription'),
+                ],
+                [
+                    'title' => 'CodeIgniter for Beginners: Build a Complete Web Application',
+                    'image' => 'udemy',
+                    'provider' => lang('Portfolio.credentials.udemyProvider'),
+                    'description' => lang('Portfolio.credentials.internshipDescription'),
+                ],
+                [
+                    'title' => 'CodeIgniter 4 - Beginner to Expert. The Best PHP Framework',
+                    'image' => 'udemy',
+                    'provider' => lang('Portfolio.credentials.udemyProvider'),
+                    'description' => lang('Portfolio.credentials.internshipDescription'),
+                ],
+                [
+                    'title' => 'The Git & GitHub Bootcamp',
+                    'image' => 'udemy',
+                    'provider' => lang('Portfolio.credentials.udemyProvider'),
+                    'description' => lang('Portfolio.credentials.internshipDescription'),
+                ],
+                [
+                    'title' => 'How To Elicit, Write & Analyze Requirements in The AI Era',
+                    'image' => 'udemy',
+                    'provider' => lang('Portfolio.credentials.udemyProvider'),
+                    'description' => lang('Portfolio.credentials.internshipDescription'),
+                ]
             ],
             'projects' => [
                 [
                     'title' => 'SECURE LICENSE ACTIVATION VIA ID DEVICE SYSTEM',
-                    'subtitle' => 'FYP Project',
+                    'subtitle' => $isMalay ? 'Projek FYP' : 'FYP Project',
                     'github_link' => 'https://github.com/ouumai/FYP-Secure-License-Activation-System.git',
-                    'overview' => 'A hardware-locked licensing system designed for small-scale software developers to prevent software piracy without requiring an internet connection.',
+                    'overview' => $isMalay ? 'Sistem pelesenan berkunci perkakasan yang direka untuk pembangun perisian berskala kecil bagi mengelakkan cetak rompak perisian tanpa memerlukan sambungan internet.' : 'A hardware-locked licensing system designed for small-scale software developers to prevent software piracy without requiring an internet connection.',
                     'tech' => 'Python, custom Tkinter, SQLite',
-                    'notes' => 'Utilizes AES encryption to bind license keys to hardware identifiers such as motherboard serial numbers or MAC addresses.'
+                    'notes' => $isMalay ? 'Menggunakan penyulitan AES untuk mengikat kunci lesen kepada pengenal perkakasan seperti nombor siri motherboard atau alamat MAC.' : 'Utilizes AES encryption to bind license keys to hardware identifiers such as motherboard serial numbers or MAC addresses.'
                 ],
                 [
                     'title' => 'SISTEM PERKHIDMATAN ICT (ICT4U)',
-                    'subtitle' => 'Internship Project',
+                    'subtitle' => $isMalay ? 'Projek Latihan Industri' : 'Internship Project',
                     'github_link' => 'https://github.com/ouumai/ICT4U.git',
-                    'highlight' => 'Completed under the supervision of Encik Noorulfaiz from department of Pengurusan Projek Aplikasi (PMO Aplikasi) at Pusat Teknologi Digital (DigitalUKM).',
-                    'overview' => 'An ICT service system developed for Pusat Teknologi Digital (DigitalUKM) to manage current application workflows, documentation and service information links.',
+                    'highlight' => $isMalay ? 'Disiapkan di bawah penyeliaan Encik Noorulfaiz daripada jabatan Pengurusan Projek Aplikasi (PMO Aplikasi) di Pusat Teknologi Digital (DigitalUKM).' : 'Completed under the supervision of Encik Noorulfaiz from department of Pengurusan Projek Aplikasi (PMO Aplikasi) at Pusat Teknologi Digital (DigitalUKM).',
+                    'overview' => $isMalay ? 'Sistem perkhidmatan ICT yang dibangunkan untuk Pusat Teknologi Digital (DigitalUKM) bagi mengurus aliran kerja aplikasi semasa, dokumentasi dan pautan maklumat perkhidmatan.' : 'An ICT service system developed for Pusat Teknologi Digital (DigitalUKM) to manage current application workflows, documentation and service information links.',
                     'tech' => 'PHP 8.4, CodeIgniter 4.7, MVC Architecture, MySQL',
-                    'notes' => 'Improved a legacy system by implementing secure authentication with CodeIgniter Shield, interactive asynchronous workflows using AJAX and SweetAlert, and an analytical dashboard for real-time monitoring.'
+                    'notes' => $isMalay ? 'Menambah baik sistem legasi dengan melaksanakan autentikasi selamat menggunakan CodeIgniter Shield, aliran kerja tak segerak interaktif menggunakan AJAX dan SweetAlert, serta papan pemuka analitik untuk pemantauan masa nyata.' : 'Improved a legacy system by implementing secure authentication with CodeIgniter Shield, interactive asynchronous workflows using AJAX and SweetAlert, and an analytical dashboard for real-time monitoring.'
                 ]
             ],
             'contact' => [
